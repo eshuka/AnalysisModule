@@ -21,7 +21,7 @@ class Places:
         self.classes = list()
         with open(files) as classes_file:
             for line in classes_file:
-                self.classes.append(line.strip().split(' ')[0][3:])
+                self.classes.append(line.strip().split(' ')[0][0:])
         self.classes = tuple(self.classes)        
 
     def inference_by_path(self, image_path):
@@ -43,13 +43,14 @@ class Places:
 	logit = self.model.forward(input_img)
 	h_x = F.softmax(logit, 1).data.squeeze()
 	probs, idx = h_x.sort(0, True)
-	place_lists = [0, 0, img.width, img.height]
-	#print('RESULT ON ' + img_name)
+	
+        place_lists = [0, 0, img.width, img.height]
 	lists = [place_lists] 
 
 	a = {}
+
 	for i in range(0, 5):
-		print('{:.3f} -> {}'.format(probs[i], self.classes[idx[i]]))
+		print (probs[i], self.classes[idx[i]])
 		a[self.classes[idx[i]]] = probs[i]
 	lists.append(a)
 	result = [lists]
