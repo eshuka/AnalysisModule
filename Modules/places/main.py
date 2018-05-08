@@ -38,6 +38,7 @@ class Places:
 
 	img = Image.open(image_path)
 	img = img.convert("RGB")
+        img = img.resize((256, 256), Image.ANTIALIAS)
 	input_img = V(centre_crop(img).unsqueeze(0), volatile=True)
 
 	logit = self.model.forward(input_img)
