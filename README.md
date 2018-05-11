@@ -16,7 +16,7 @@ FROM ubuntu:16.04
 ##### Docker Build
 ```bash
 cd docker
-docker build [OPTIONS] -tag [TAG] .
+docker build [OPTIONS] -t [TAG] .
 ```
 
 
@@ -53,6 +53,8 @@ vi secret_key.py
 ```python
 SECRET_KEY = ""
 ```
+https://djskgen.herokuapp.com/ 에서 생성할 수 있다.
+
 
 ## Module 추가하기
 
@@ -86,7 +88,7 @@ Class를 초기화하는 부분에선 Module을 미리 Load하고, 대기 상태
 결과값은 다음과 같은 형태를 띄도록 설계한다.
 
 ```bash
-[ [ x, y, w, h ] { Label : Percent } ] 
+[ [ ( x, y, w, h ), { Label1 : Percent1, Label2 : Perecnt2 } ], [ ( x, y, w, h ), { Label : Percent } ] ]
 ```
 이는 Module을 통한 결과 Label이 위치 (x, y)에서 너비 w, 높이 h 크기의 사각형 위에서 검출되었으며, 그 확률이 Percent임을 의미한다.
 
