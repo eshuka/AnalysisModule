@@ -16,7 +16,7 @@ class Places:
         
         self.model = torch.load(self.model)
         
-        files = os.path.join(code_path,'categories.txt')
+        files = os.path.join(code_path,'category.txt')
 
         self.classes = list()
         with open(files) as classes_file:
