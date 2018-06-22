@@ -38,6 +38,7 @@ class Places:
 
 	img = Image.open(image_path)
 	img = img.convert("RGB")
+	place_lists = [0, 0, img.width, img.height]
         img = img.resize((256, 256), Image.ANTIALIAS)
 	input_img = V(centre_crop(img).unsqueeze(0), volatile=True)
 
@@ -45,7 +46,7 @@ class Places:
 	h_x = F.softmax(logit, 1).data.squeeze()
 	probs, idx = h_x.sort(0, True)
 	
-        place_lists = [0, 0, img.width, img.height]
+        #place_lists = [0, 0, img.width, img.height]
 	lists = [place_lists] 
 
 	a = {}
