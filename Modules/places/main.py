@@ -5,6 +5,8 @@ from torchvision import transforms as trn
 from torch.nn import functional as F
 import os
 from PIL import Image
+from functools import partial
+import pickle
 
 class Places:
     def __init__(self):
@@ -12,10 +14,21 @@ class Places:
         #   - initialize and load model here
         code_path = os.path.dirname(os.path.abspath(__file__))
         self.model = os.path.join(code_path,'resnet50.pth.tar')
+        
         self.result = None
-        
-        self.model = torch.load(self.model)
-        
+
+        pickle.load = partial(pickle.load, encoding="latin1")
+        pickle.Unpickler = partial(pickle.Unpickler, encoding = "latin1")       
+
+        self.model = torch.load(self.model, map_location=lambda storage, loc: storage, pickle_module = pickle)
+        self.model = self.model.cuda()
+       
+        #useGPU = 0
+        #if useGPU == 0:
+        #    self.model = torch.load(self.model)
+        #else:
+        #    model = torch.load(self.model, map_location=lambda storage, loc:storage)
+
         files = os.path.join(code_path,'categories.txt')
 
         self.classes = list()
@@ -35,27 +48,26 @@ class Places:
 	        trn.ToTensor(),
 	        trn.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 	])
-
-	img = Image.open(image_path)
-	img = img.convert("RGB")
-	place_lists = [0, 0, img.width, img.height]
+        img = Image.open(image_path)
+        img = img.convert("RGB")
+        place_lists = [0, 0, img.width, img.height]
         img = img.resize((256, 256), Image.ANTIALIAS)
-	input_img = V(centre_crop(img).unsqueeze(0), volatile=True)
-
-	logit = self.model.forward(input_img)
-	h_x = F.softmax(logit, 1).data.squeeze()
-	probs, idx = h_x.sort(0, True)
+        input_img = V(centre_crop(img).unsqueeze(0), volatile=True)
+        
+        logit = self.model.forward(input_img)
+        h_x = F.softmax(logit, 1).data.squeeze()
+        probs, idx = h_x.sort(0, True)
 	
         #place_lists = [0, 0, img.width, img.height]
-	lists = [place_lists] 
+        lists = [place_lists] 
 
-	a = {}
+        a = {}
 
-	for i in range(0, 5):
-		print (probs[i], self.classes[idx[i]])
-		a[self.classes[idx[i]]] = probs[i]
-	lists.append(a)
-	result = [lists]
+        for i in range(0, 5):
+            print (probs[i], self.classes[idx[i]])
+            a[self.classes[idx[i]]] = probs[i]
+        lists.append(a)
+        result = [lists]
 
         self.result = result
 
