@@ -17,17 +17,8 @@ class Places:
         
         self.result = None
 
-        pickle.load = partial(pickle.load, encoding="latin1")
-        pickle.Unpickler = partial(pickle.Unpickler, encoding = "latin1")       
-
-        self.model = torch.load(self.model, map_location=lambda storage, loc: storage, pickle_module = pickle)
-        self.model = self.model.cuda()
-       
-        #useGPU = 0
-        #if useGPU == 0:
-        #    self.model = torch.load(self.model)
-        #else:
-        #    model = torch.load(self.model, map_location=lambda storage, loc:storage)
+        self.model = torch.load(self.model)
+        self.model = torch.nn.DataParallel(self.model).cuda()
 
         files = os.path.join(code_path,'categories.txt')
 
