@@ -6,3 +6,4 @@ rm -f *.log celerybeat-schedule
 echo 'Log file delete'
 python manage.py makemigrations
 python manage.py migrate
+
